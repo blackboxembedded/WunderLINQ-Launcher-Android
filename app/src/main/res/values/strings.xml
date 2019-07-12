@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WunderLINQ Launcher</string>
+    <string name="title_activity_about">AboutActivity</string>
+</resources>
