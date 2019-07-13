@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,6 +35,8 @@ public class HomeActivity extends AppCompatActivity {
 
     RelativeLayout ContainerHome;
 
+    boolean floatBallLaunched = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,16 @@ public class HomeActivity extends AppCompatActivity {
         loadApps();
         loadListView();
         addGridListeners();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!floatBallLaunched) {
+            floatBallLaunched = true;
+            Intent intent = packageManager.getLaunchIntentForPackage("com.huxq17.example.floatball");
+            HomeActivity.this.startActivity(intent);
+        }
     }
 
     public void addGridListeners() {
@@ -133,8 +146,8 @@ public class HomeActivity extends AppCompatActivity {
                     appinfo.label = ri.loadLabel(packageManager);
                     appinfo.name = ri.activityInfo.packageName;
                     appinfo.icon = ri.activityInfo.loadIcon(packageManager);
+                    Log.d("WLQL", "name: " + ri.activityInfo.packageName);
                     apps.add(appinfo);
-
                 }
             }
 
@@ -144,7 +157,6 @@ public class HomeActivity extends AppCompatActivity {
         }
 
     }
-
 
     public void showApps(View v) {
         HideAppDrawer(true);
@@ -162,11 +174,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void showStorage(View v) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.setType("file/*");
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        startActivity(intent);
+        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.mediatek.filemanager");
+        if (launchIntent != null) {
+            startActivity(launchIntent);//null pointer check in case package name was not found
+        }
     }
 
     public void showBBE(View v) {
@@ -191,8 +202,6 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-
-        Log.d("WLQL", "Key: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_ESCAPE) {
             HideAppDrawer(false);
         }
