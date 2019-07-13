@@ -1,11 +1,14 @@
 package com.blackboxembedded.WunderLINQLauncher;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.ListPreference;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,13 +29,15 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private final static String TAG = "HomeActivity";
+
     PackageManager packageManager;
+    private SharedPreferences sharedPrefs;
     public static List<AppInfo> apps;
     GridView grdView;
     public static ArrayAdapter<AppInfo> adapter;
 
     LinearLayout containAppDrawer;
-
     RelativeLayout ContainerHome;
 
     boolean floatBallLaunched = false;
@@ -41,6 +46,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         containAppDrawer = (LinearLayout) findViewById(R.id.containAppDrawer);
         ContainerHome = (RelativeLayout) findViewById(R.id.ContainerHome);
@@ -58,7 +65,9 @@ public class HomeActivity extends AppCompatActivity {
         if (!floatBallLaunched) {
             floatBallLaunched = true;
             Intent intent = packageManager.getLaunchIntentForPackage("com.huxq17.example.floatball");
-            HomeActivity.this.startActivity(intent);
+            if (intent != null) {
+                HomeActivity.this.startActivity(intent);
+            }
         }
     }
 
@@ -75,9 +84,7 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(HomeActivity.this, ex.getMessage().toString() + " Grid", Toast.LENGTH_LONG).show();
             Log.e("Error Grid", ex.getMessage().toString() + " Grid");
         }
-
     }
-
 
     private void loadListView() {
 
@@ -111,13 +118,11 @@ public class HomeActivity extends AppCompatActivity {
                             viewHolder.label.setText(appInfo.label);
                         }
                         return convertView;
-
                     }
 
                     final class ViewHolderItem {
                         ImageView icon;
                         TextView label;
-                        TextView name;
                     }
                 };
             }
@@ -155,7 +160,6 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(HomeActivity.this, ex.getMessage().toString() + " loadApps", Toast.LENGTH_LONG).show();
             Log.e("Error loadApps", ex.getMessage().toString() + " loadApps");
         }
-
     }
 
     public void showApps(View v) {
@@ -174,18 +178,31 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void showStorage(View v) {
-        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.mediatek.filemanager");
-        if (launchIntent != null) {
-            startActivity(launchIntent);//null pointer check in case package name was not found
+
+        String fileManager = sharedPrefs.getString("filemanager_key", "Default");
+        if (fileManager.equals("Default")) {
+            Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.mediatek.filemanager");
+            if (launchIntent != null) {
+                startActivity(launchIntent);//null pointer check in case package name was not found
+            } else {
+                Log.d(TAG,"Filemanger: PROBLEM Launching Mediatek File Manager");
+            }
+        } else {
+            Intent launchIntent = getPackageManager().getLaunchIntentForPackage(fileManager);
+            if (launchIntent != null) {
+                startActivity(launchIntent);//null pointer check in case package name was not found
+            } else {
+                Log.d(TAG,"Filemanger: PROBLEM Launching selected File Manager");
+            }
         }
     }
 
-    public void showBBE(View v) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.blackboxembedded.com"));
-        startActivity(browserIntent);
+    public void showAppSettings(View v) {
+        Intent settingsIntent = new Intent(HomeActivity.this, SettingsActivity.class);
+        startActivity(settingsIntent);
     }
 
-    public void showSettings(View v) {
+    public void showAndroidSettings(View v) {
         startActivity(new Intent(Settings.ACTION_SETTINGS));
     }
 
@@ -197,7 +214,6 @@ public class HomeActivity extends AppCompatActivity {
             containAppDrawer.setVisibility(View.GONE);
             ContainerHome.setVisibility(View.VISIBLE);
         }
-
     }
 
     @Override
@@ -212,6 +228,5 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
         HideAppDrawer(false);
     }
-
 
 }

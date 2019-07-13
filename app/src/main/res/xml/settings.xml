@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="prefScreenRoot">
+    <PreferenceCategory android:title="@string/info_title" >
+        <Preference
+            android:selectable="false"
+            android:enabled="true"
+            android:key="version_key"
+            android:title="@string/version_header"
+            android:summary="" />
+        <Preference
+            android:selectable="true"
+            android:enabled="true"
+            android:key="wunderlinq_key"
+            android:title="@string/wunderlinq_promo"
+            android:summary="@string/wunderlinq_url" />
+        <Preference
+            android:selectable="true"
+            android:enabled="true"
+            android:key="company_key"
+            android:title="@string/copyright"
+            android:summary="@string/company_url" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_title" >
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@android:array/postalAddressTypes"
+            android:entryValues="@android:array/postalAddressTypes"
+            android:key="filemanager_key"
+            android:title="@string/filemanager_header" />
+    </PreferenceCategory>
+</PreferenceScreen>

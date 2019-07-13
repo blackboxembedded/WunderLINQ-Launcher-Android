@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">WunderLINQ Launcher</string>
-    <string name="title_activity_about">AboutActivity</string>
+    <string name="company_name">Black Box Embedded, LLC</string>
+    <string name="company_url">http://www.blackboxembedded.com/</string>
+    <string name="wunderlinq_url">http://www.wunderlinq.com/</string>
+
+    <!-- SettingsActivity -->
+    <string name="info_title">WunderLINQ Android Launcher</string>
+    <string name="version_header">Version</string>
+    <string name="wunderlinq_promo">For use with the WunderLINQ</string>
+    <string name="copyright">© 2019 Black Box Embedded, LLC</string>
+    <string name="settings_title">Settings</string>
+    <string name="filemanager_header">File Manager</string>
+    <string name="filemanager_default">Default</string>
+
 </resources>
